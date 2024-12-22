@@ -24,6 +24,7 @@ function ContactForm() {
   const handleSendMail = async (e) => {
     e.preventDefault();
 
+    // Check if required fields are empty
     if (!userInput.email || !userInput.message || !userInput.name) {
       setError({ ...error, required: true });
       return;
@@ -35,23 +36,27 @@ function ContactForm() {
 
     try {
       setIsLoading(true);
+      console.log("Sending form data:", userInput);  // Log form data for debugging
       const res = await axios.post("/api/contact", {
         ...userInput,
         notifyViaTelegram: true,
         notifyViaEmail: true,
       });
 
+      // Check API response and handle success/error
       if (res.data.success) {
-        toast.success("Message sent! I&apos;ll get back to you soon via email.");
+        toast.success("Message sent! I'll get back to you soon via email.");
         setUserInput({
           name: "",
           email: "",
           message: "",
         });
+        setError({ email: false, required: false });  // Reset errors on success
       } else {
         toast.error("Failed to send message. Please try again.");
       }
     } catch (error) {
+      console.error("Error sending message:", error);  // Log the error for debugging
       toast.error(
         "Failed to send message. Please try again or contact me directly at adityaraj3458@gmail.com"
       );
@@ -72,7 +77,7 @@ function ContactForm() {
           hi - I&apos;d love to hear from you!
         </p>
         <form onSubmit={handleSendMail} className="mt-6 flex flex-col gap-4">
-          {/* Rest of the form JSX remains the same */}
+          {/* Name Field */}
           <div className="flex flex-col gap-2">
             <label htmlFor="name" className="text-base">
               Name
@@ -92,6 +97,7 @@ function ContactForm() {
             />
           </div>
 
+          {/* Email Field */}
           <div className="flex flex-col gap-2">
             <label htmlFor="email" className="text-base">
               Email
@@ -119,6 +125,7 @@ function ContactForm() {
             )}
           </div>
 
+          {/* Message Field */}
           <div className="flex flex-col gap-2">
             <label htmlFor="message" className="text-base">
               Message
@@ -137,6 +144,8 @@ function ContactForm() {
               value={userInput.message}
             />
           </div>
+
+          {/* Error Handling */}
           <div className="flex flex-col items-center gap-3">
             {error.required && (
               <p className="text-sm text-red-400">
