@@ -7,7 +7,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: 'smtp.gmail.com',
   port: 587,
-  secure: false, // Use STARTTLS
+  secure: false,  // Use STARTTLS
   auth: {
     user: process.env.EMAIL_ADDRESS,
     pass: process.env.GMAIL_PASSKEY,
@@ -82,6 +82,7 @@ export async function POST(request) {
     const chat_id = process.env.TELEGRAM_CHAT_ID;
 
     if (!token || !chat_id || !process.env.EMAIL_ADDRESS || !process.env.GMAIL_PASSKEY) {
+      console.error('Missing environment variables');
       return NextResponse.json(
         { success: false, message: 'Missing required environment variables.' },
         { status: 500 }
